@@ -10,9 +10,7 @@ import ImageIcon from '@mui/icons-material/Image';
 
 import Box from '@mui/material/Box';
 import Chip from '@mui/material/Chip';
-import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
-import Stack from '@mui/material/Stack';
 import Divider from '@mui/material/Divider';
 import Typography from '@mui/material/Typography';
 
@@ -21,19 +19,24 @@ import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
-import YardIcon from '@mui/icons-material/Yard';
 
 import Paper from '@mui/material/Paper';
 
 const ExpensesList = () => {
-    const { expenses, buyersList, expensesExists } = useContext(ExpensesContext); 
+    const { expenses, buyersList, expensesExists, } = useContext(ExpensesContext); 
 
+    if (!expensesExists) {
+        return (
+            <></>
+        )
+    }
     return (
         <>
             <Paper elevation={3} sx={{ minWidth: 600, m:1, p: 2 }} >
                 <Typography gutterBottom variant="h5" component="div">
                     ¿Quiénes compraron?
                 </Typography>
+                
                 {buyersList.map(buyer => {
                     return (
                         <Box sx={{ width: '100%', bgcolor: 'background.paper' }} key={buyer.key}>
@@ -43,9 +46,17 @@ const ExpensesList = () => {
                                         <Typography gutterBottom variant="h5" component="div">
                                             {buyer.name}
                                         </Typography>
+                                        {buyer.isMeat ?
+                                            <Chip label="Carne" variant="filled"/> : <div></div>
+                                        }
+                                        {buyer.isVeggie ? 
+                                            <Chip label="Veggie" variant="filled"/> : <div></div>
+                                        }
                                         {buyer.isVegan ? 
-                                            <YardIcon /> :
-                                            <div></div>
+                                            <Chip label="Vegan" variant="filled"/> : <div></div>
+                                        }
+                                        {buyer.isGlutenFree ? 
+                                            <Chip label="Gluten Free" variant="filled"/> : <div></div>
                                         }
                                     </Grid>
                                     <Grid item>
