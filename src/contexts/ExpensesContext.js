@@ -60,18 +60,21 @@ export const ExpensesProvider = ({ children }) => {
         //7ima parte ordena a los compradores según lo que gastó cada uno: 
         let sortedList = buyersList.sort((a, b) => { return b.buyerTotalExpenses - a.buyerTotalExpenses })
         setBuyersList(sortedList);
+        
+    }, [expenses, generalIndividual, glutenFreeIndividual, meatIndividual, veganIndividual, veggieIndividual, buyersList]);
+
+    useEffect(() => {
         //8ava parte reparte los gastos dependiendo de lo que consumió cada comprador:
         let newBuyersList = buyersList.map(buyer => {
-            const { name, isMeat, isVegan, isVeggie, isGlutenFree } = buyer;
-            console.log(name, "isMeat", isMeat, "isVegan", isVegan, "isVeggie", isVeggie, "isGlutenFree", isGlutenFree)
-                //INDIVIDUALES
+            const { isMeat, isVegan, isVeggie, isGlutenFree } = buyer;
+            //INDIVIDUALES
             if (isMeat && !isVegan && !isVeggie && !isGlutenFree) return { ...buyer, debt: generalIndividual + meatIndividual };
             else if (!isMeat && isVegan && !isVeggie && !isGlutenFree) return { ...buyer, debt: generalIndividual + veganIndividual };
             else if (!isMeat && !isVegan && isVeggie && !isGlutenFree) return { ...buyer, debt: generalIndividual + veggieIndividual };
             else if (!isMeat && !isVegan && !isVeggie && isGlutenFree) return { ...buyer, debt: generalIndividual + glutenFreeIndividual };
             //DUOS
-            else if (isMeat && isVegan && !isVeggie && !isGlutenFree) return { ...buyer, debt: generalIndividual + meatIndividual + veganIndividual};
-            else if (isMeat && !isVegan && isVeggie && !isGlutenFree) return { ...buyer, debt: generalIndividual + meatIndividual + veggieIndividual};
+            else if (isMeat && isVegan && !isVeggie && !isGlutenFree) return { ...buyer, debt: generalIndividual + meatIndividual + veganIndividual };
+            else if (isMeat && !isVegan && isVeggie && !isGlutenFree) return { ...buyer, debt: generalIndividual + meatIndividual + veggieIndividual };
             else if (isMeat && !isVegan && !isVeggie && isGlutenFree) return { ...buyer, debt: generalIndividual + meatIndividual + glutenFreeIndividual };
             else if (!isMeat && isVegan && isVeggie && !isGlutenFree) return { ...buyer, debt: generalIndividual + veganIndividual + veggieIndividual };
             else if (!isMeat && isVegan && !isVeggie && isGlutenFree) return { ...buyer, debt: generalIndividual + veganIndividual + glutenFreeIndividual };
@@ -87,10 +90,8 @@ export const ExpensesProvider = ({ children }) => {
             else return { ...buyer, debt: generalIndividual };
         })
         setBuyersList(newBuyersList)
-
-        
-
-    }, [expenses, generalIndividual, glutenFreeIndividual, meatIndividual, veganIndividual, veggieIndividual]);
+        // eslint-disable-next-line 
+    }, [generalIndividual, meatIndividual, glutenFreeIndividual, veganIndividual, veggieIndividual])
     
 
     useEffect(() => {      
@@ -155,7 +156,7 @@ export const ExpensesProvider = ({ children }) => {
     const [expensesExists, setExpensesExists] = useState(false)
 
     return (
-        <ExpensesContext.Provider value={{expenses, setExpenses, totalExpenses, diners, buyersList, assignExpensesToBuyer, expensesExists, setExpensesExists, individualTotal, meatTotal, veganTotal, veggieTotal, glutenFreeTotal, meatIndividual, veganIndividual, veggieIndividual, glutenFreeIndividual, meatDinersNumber}}>
+        <ExpensesContext.Provider value={{expenses, setExpenses, totalExpenses, diners, buyersList, assignExpensesToBuyer, expensesExists, setExpensesExists, individualTotal, meatTotal, veganTotal, veggieTotal, glutenFreeTotal, meatIndividual, veganIndividual, veggieIndividual, glutenFreeIndividual, meatDiners, veganDiners, veggieDiners, glutenFreeDiners, meatDinersNumber, veganDinersNumber, veggieDinersNumber, glutenFreeDinersNumber}}>
             {children}
         </ExpensesContext.Provider>
     )
