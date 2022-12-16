@@ -1,29 +1,21 @@
 import { useContext } from "react";
 import { ExpensesContext } from "../contexts/ExpensesContext";
 
-import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
 import Avatar from '@mui/material/Avatar';
-import ImageIcon from '@mui/icons-material/Image';
-
 import Box from '@mui/material/Box';
 import Chip from '@mui/material/Chip';
 import Grid from '@mui/material/Grid';
 import Divider from '@mui/material/Divider';
 import Typography from '@mui/material/Typography';
 
-import Accordion from '@mui/material/Accordion';
-import AccordionSummary from '@mui/material/AccordionSummary';
-import AccordionDetails from '@mui/material/AccordionDetails';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-
 
 import Paper from '@mui/material/Paper';
 
 const ExpensesList = () => {
-    const { expenses, buyersList, expensesExists, } = useContext(ExpensesContext); 
+    const { buyersList, expensesExists, } = useContext(ExpensesContext); 
 
     if (!expensesExists) {
         return (
@@ -34,34 +26,39 @@ const ExpensesList = () => {
         <>
             <Paper elevation={3} sx={{ minWidth: 600, m:1, p: 2 }} >
                 <Typography gutterBottom variant="h5" component="div">
-                    ¿Quiénes compraron?
+                    Listado de compras: 
                 </Typography>
                 
                 {buyersList.map(buyer => {
                     return (
                         <Box sx={{ width: '100%', bgcolor: 'background.paper' }} key={buyer.key}>
                             <Box sx={{ my: 3, mx: 2 }}>
-                                <Grid container alignItems="center">
-                                    <Grid item xs>
+                                <Grid container alignItems="center" spacing={2}>
+                                    <Grid item >
                                         <Typography gutterBottom variant="h5" component="div">
                                             {buyer.name}
                                         </Typography>
+                                            <Typography > Consume: </Typography>
+                                    </Grid>
+                                    <Grid item xs >
+                                            <Chip label="General" variant="filled" sx={{fontWeight:"bold", mx:"3px"}}/>
                                         {buyer.isMeat ?
-                                            <Chip label="Carne" variant="filled"/> : <div></div>
+                                            <Chip label="Carne" variant="filled" sx={{backgroundColor:"red", fontWeight:"bold", mx:"3px"}}/> : <div></div>
                                         }
                                         {buyer.isVeggie ? 
-                                            <Chip label="Veggie" variant="filled"/> : <div></div>
+                                            <Chip label="Veggie" variant="filled" sx={{backgroundColor:"limeGreen", fontWeight:"bold", mx:"3px"}}/> : <div></div>
                                         }
                                         {buyer.isVegan ? 
-                                            <Chip label="Vegan" variant="filled"/> : <div></div>
+                                            <Chip label="Vegan" variant="filled" sx={{backgroundColor:"green", fontWeight:"bold", mx:"3px"}}/> : <div></div>
                                         }
                                         {buyer.isGlutenFree ? 
-                                            <Chip label="Gluten Free" variant="filled"/> : <div></div>
+                                            <Chip label="Gluten Free" variant="filled" sx={{backgroundColor:"orange", fontWeight:"bold", mx:"3px"}}/> : <div></div>
                                         }
+
                                     </Grid>
                                     <Grid item>
                                         <Typography gutterBottom variant="h6" component="div">
-                                            Aportó: ${buyer.buyerTotalExpenses}
+                                            Aportó: {new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS' }).format(buyer.buyerTotalExpenses) }
                                         </Typography>
                                     </Grid>
                                 </Grid>
@@ -71,59 +68,15 @@ const ExpensesList = () => {
                                 return (
                                     <ListItem key={expense.key}>
                                         <ListItemAvatar>
-                                            <Avatar>
-                                                <ImageIcon />
-                                            </Avatar>
+                                            {(expense.type === "meat") ? <Avatar src="./assets/icons/meat.png"> </Avatar> : (expense.type === "vegan") ? <Avatar src="./assets/icons/vegan.png"> </Avatar> : (expense.type === "veggie") ? <Avatar src="./assets/icons/veggie.png"> </Avatar> : (expense.type === "glutenFree") ? <Avatar src="./assets/icons/glutenFree.png"> </Avatar> : <Avatar src="./assets/icons/general.png"> </Avatar>}
                                         </ListItemAvatar>
                                         <ListItemText primary={expense.total} secondary={expense.description} />
                                     </ListItem>
                                 )})
                             }
-                            {/* <Box sx={{ m: 2 }}>
-                                <Typography gutterBottom variant="body1">
-                                    Select type
-                                </Typography>
-                                <Stack direction="row" spacing={1}>
-                                    <Chip label="Extra Soft" />
-                                    <Chip color="primary" label="Soft" />
-                                    <Chip label="Medium" />
-                                    <Chip label="Hard" />
-                                </Stack>
-                            </Box>
-                            <Box sx={{ mt: 3, ml: 1, mb: 1 }}>
-                                <Button>Add to cart</Button>
-                            </Box> */}
                         </Box>
                     )
                 })}
-                {expensesExists ? 
-                    <Accordion>
-                        <AccordionSummary
-                            expandIcon={<ExpandMoreIcon />}
-                            aria-controls="panel1a-content"
-                            id="panel1a-header"
-                        >
-                            <Typography>Todas los compras</Typography>
-                        </AccordionSummary>
-                        <AccordionDetails>
-                            <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
-                        {expenses.map(expense => {
-                            return (
-                                <ListItem key={expense.key}>
-                                    <ListItemAvatar>
-                                        <Avatar>
-                                            <ImageIcon />
-                                        </Avatar>
-                                    </ListItemAvatar>
-                                    <ListItemText primary={expense.total} secondary={expense.buyer} />
-                                </ListItem>
-                            )})
-                        }
-                    </List>
-                        </AccordionDetails>
-                    </Accordion> :
-                    <div></div>
-                }
             </Paper>
             
         </>

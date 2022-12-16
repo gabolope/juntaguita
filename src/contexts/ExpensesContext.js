@@ -1,4 +1,5 @@
-import { useState, createContext, useEffect } from "react"
+import { useState, createContext, useEffect } from "react";
+import accounting from "accounting-js"
 
 export const ExpensesContext = createContext();
 
@@ -35,27 +36,27 @@ export const ExpensesProvider = ({ children }) => {
 
     useEffect(() => {
         //1era parte suma todos los gastos:
-        let sum = expenses.map(expense => parseInt(expense.total));
+        let sum = expenses.map(expense => accounting.unformat(`$ ${expense.total}`, ","));
         setTotalExpenses(sum.reduce((a, b) => a + b, 0)); 
         //2nda parte suma los gastos de carne:
         const generalExpenses = expenses.filter(expense => expense.type === "general");
-        let generalSum = generalExpenses.map(expense => parseInt(expense.total));
+        let generalSum = generalExpenses.map(expense => accounting.unformat(`$ ${expense.total}`, ","));
         setGeneralTotal(generalSum.reduce((a, b) => a + b, 0));
         //3era parte suma los gastos de carne:
         const meatExpenses = expenses.filter(expense => expense.type === "meat");
-        let meatSum = meatExpenses.map(expense => parseInt(expense.total));
+        let meatSum = meatExpenses.map(expense => accounting.unformat(`$ ${expense.total}`, ","));
         setMeatTotal(meatSum.reduce((a, b) => a + b, 0));
         //4ta parte suma los gastos veganos:
         const veganExpenses = expenses.filter(expense => expense.type === "vegan");
-        let veganSum = veganExpenses.map(expense => parseInt(expense.total));
+        let veganSum = veganExpenses.map(expense => accounting.unformat(`$ ${expense.total}`, ","));
         setVeganTotal(veganSum.reduce((a, b) => a + b, 0));
         //5ta parte suma los gastos veggie:
         const veggieExpenses = expenses.filter(expense => expense.type === "veggie");
-        let veggieSum = veggieExpenses.map(expense => parseInt(expense.total));
+        let veggieSum = veggieExpenses.map(expense => accounting.unformat(`$ ${expense.total}`, ","));
         setVeggieTotal(veggieSum.reduce((a, b) => a + b, 0));
         //6ta parte suma los gastos celiacos:
         const GlutenFreeExpenses = expenses.filter(expense => expense.type === "glutenFree");
-        let GlutenFreeSum = GlutenFreeExpenses.map(expense => parseInt(expense.total));
+        let GlutenFreeSum = GlutenFreeExpenses.map(expense => accounting.unformat(`$ ${expense.total}`, ","));
         setGlutenFreeTotal(GlutenFreeSum.reduce((a, b) => a + b, 0));
         //7ima parte ordena a los compradores según lo que gastó cada uno: 
         let sortedList = buyersList.sort((a, b) => { return b.buyerTotalExpenses - a.buyerTotalExpenses })
@@ -142,21 +143,21 @@ export const ExpensesProvider = ({ children }) => {
         let buyerExists = buyersList.some(buyer => buyer.name === buyerName); 
         if (!buyerExists) {
             let key = buyersList.length + 1;
-            let newBuyer = new Buyer(buyerName, [newExpense], parseInt(newExpense.total), isMeat, isVegan, isVeggie, isGlutenFree, key); 
+            let newBuyer = new Buyer(buyerName, [newExpense], accounting.unformat(`$ ${newExpense.total}`, ","), isMeat, isVegan, isVeggie, isGlutenFree, key); 
             let newBuyersList = [...buyersList, newBuyer];
             setBuyersList(newBuyersList)
         } else {
             const buyerExpenses = expenses.filter(expense => expense.buyer === buyerName.toString());
             const newBuyer = buyersList.find(buyer => buyer.name === buyerName);
             newBuyer.expenses = [...buyerExpenses, newExpense];
-            newBuyer.buyerTotalExpenses += parseInt(newExpense.total);
+            newBuyer.buyerTotalExpenses += accounting.unformat(`$ ${newExpense.total}`, ",");
         }
     }
 
     const [expensesExists, setExpensesExists] = useState(false)
 
     return (
-        <ExpensesContext.Provider value={{expenses, setExpenses, totalExpenses, diners, buyersList, assignExpensesToBuyer, expensesExists, setExpensesExists, individualTotal, meatTotal, veganTotal, veggieTotal, glutenFreeTotal, meatIndividual, veganIndividual, veggieIndividual, glutenFreeIndividual, meatDiners, veganDiners, veggieDiners, glutenFreeDiners, meatDinersNumber, veganDinersNumber, veggieDinersNumber, glutenFreeDinersNumber}}>
+        <ExpensesContext.Provider value={{expenses, setExpenses, totalExpenses, diners, buyersList, assignExpensesToBuyer, expensesExists, setExpensesExists, individualTotal, generalTotal, meatTotal, veganTotal, veggieTotal, glutenFreeTotal, generalIndividual, meatIndividual, veganIndividual, veggieIndividual, glutenFreeIndividual, meatDiners, veganDiners, veggieDiners, glutenFreeDiners, meatDinersNumber, veganDinersNumber, veggieDinersNumber, glutenFreeDinersNumber}}>
             {children}
         </ExpensesContext.Provider>
     )

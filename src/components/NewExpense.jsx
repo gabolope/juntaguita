@@ -4,7 +4,6 @@ import { ExpensesContext } from "../contexts/ExpensesContext";
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
-import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -15,6 +14,8 @@ import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
+
+
 
 
 const NewExpense = () => {
@@ -79,7 +80,7 @@ const NewExpense = () => {
         let isBuyerVegan = document.getElementById("isVegan").checked;
         let isBuyerVeggie = document.getElementById("isVeggie").checked;
         let isBuyerGlutenFree = document.getElementById("isGlutenFree").checked;
-        let expenseTotal = parseInt(document.getElementById("expenseTotal").value);
+        let expenseTotal = new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS' }).format(parseInt(document.getElementById("expenseTotal").value));
         let expenseDescription = document.getElementById("expenseDescription").value;
         let type = foodState.selected;
         let key = expenses.length + 1;
@@ -90,9 +91,40 @@ const NewExpense = () => {
         setExpensesExists(true);
     }
     
-   
+    // Habilita el botón de "Agregar" cuando se llenan los 3 campos del formulario:
+    const [name, setName] = useState();
+    const [description, setDescription] = useState();
+    const [price, setPrice] = useState();
+    const changeName = () => {setName(document.getElementById("buyerName").value)}
+    const changeDescription = () => {setDescription(document.getElementById("expenseDescription").value)}
+    const changePrice = () => {setPrice(document.getElementById("expenseTotal").value)}
 
 
+
+    //CSS:
+
+    const nameInput = {
+        fontSize: "1.25rem",
+        minWidth: "550px",
+        minHeight: "35px",
+        border: "2px black solid",
+        borderRadius: "3px"
+    }
+
+    const dietTitle = {
+        fontFamily: "Rotobo, Helvetica, Arial, sans-serif",
+        fontSize: "1.15rem",
+        fontStyle: "italic",
+        margin: "10px 0 5px 0"
+    }
+
+    const productInput = {
+        fontSize: "1.25rem",
+        minWidth: "250px",
+        minHeight: "35px",
+        border: "2px black solid",
+        borderRadius: "3px",
+    }
 
     return (
         <>
@@ -109,47 +141,58 @@ const NewExpense = () => {
                 >
                 <Paper elevation={3} sx={{minWidth: 600}} >
                     <Box sx={{m:1}}>
-                        <Stack direction="row" spacing={1}>
-                        <TextField id="buyerName" label="Persona" variant="outlined" />
+                        <input id="buyerName" type="text"  onChange={()=> changeName()}  placeholder="Persona" style={nameInput}/>
                         <FormGroup>
-                            <FormControlLabel
-                                control={
-                                <Checkbox checked={isMeat} onChange={handleMeatChange} name="isMeat" id="isMeat"/>
-                                }
-                                label="Carne"
-                            />
-                            <FormControlLabel
-                                control={
-                                <Checkbox checked={isVegan} onChange={handleVeganChange} name="isVegan" id="isVegan"/>
-                                }
-                                label="Vegan"
-                            />
-                            <FormControlLabel
-                                control={
-                                <Checkbox checked={isVeggie} onChange={handleVeggieChange} name="isVeggie" id="isVeggie"/>
-                                }
-                                label="Vegetariano"
-                            />
-                            <FormControlLabel
-                                control={
-                                <Checkbox checked={isGlutenFree} onChange={handleGlutenFreeChange} name="isGlutenFree" id="isGlutenFree"/>
-                                }
-                                label="Celíaco"
-                            />
+                            <div style={dietTitle}>
+                                Tipos de alimentos que consume {name}
+                            </div>
+                            <Stack direction="row" spacing={1}>
+                                <FormControlLabel
+                                    control={
+                                    <Checkbox checked={isMeat} onChange={handleMeatChange} name="isMeat" id="isMeat"/>
+                                    }
+                                    label="Carne"
+                                />
+                                <FormControlLabel
+                                    control={
+                                    <Checkbox checked={isVegan} onChange={handleVeganChange} name="isVegan" id="isVegan"/>
+                                    }
+                                    label="Vegano"
+                                />
+                                <FormControlLabel
+                                    control={
+                                    <Checkbox checked={isVeggie} onChange={handleVeggieChange} name="isVeggie" id="isVeggie"/>
+                                    }
+                                    label="Vegetariano"
+                                />
+                                <FormControlLabel
+                                    control={
+                                    <Checkbox checked={isGlutenFree} onChange={handleGlutenFreeChange} name="isGlutenFree" id="isGlutenFree"/>
+                                    }
+                                    label="Sin gluten"
+                                />
+                            </Stack>
                         </FormGroup>
-                    </Stack>
                     </Box>
                     <Box sx={{m:1}}>
-                        <Divider variant="middle" sx={{my:1}}/>
-                        <Typography variant="h5" gutterBottom component="div">
-                            Gastos
-                        </Typography>
+                        <Divider variant="middle" sx={{ my: 1 }} />
+                        {
+                            name ?
+                                <Typography variant="h6" gutterBottom component="div">
+                                    Agregar compras de {name}
+                                </Typography>
+                                :
+                                <Typography variant="h6" gutterBottom component="div">
+                                    Agregar compras
+                                </Typography>
+                        }
+                        
                         <Stack direction="row" spacing={1}>
-                            <TextField inputProps={{ inputMode: 'numeric' }} id="expenseTotal" label="Gasto" variant="outlined" />
-                            <TextField id="expenseDescription" label="Descripción" variant="outlined" />
+                            <input id="expenseDescription" type="text" placeholder="Descripción" onChange={()=> changeDescription()} style={productInput}></input>
+                            <input id="expenseTotal" type="number" placeholder="Precio" min="1" onChange={()=> changePrice()} style={productInput}></input>
                         </Stack>
                         <FormControl>
-                            <FormLabel id="demo-row-radio-buttons-group-label">Tipo:</FormLabel>
+                            <FormLabel id="demo-row-radio-buttons-group-label" sx={{ mt: 1 }}>Tipo de compra:</FormLabel>
                             <RadioGroup
                                 row
                                 aria-labelledby="demo-row-radio-buttons-group-label"
@@ -165,7 +208,12 @@ const NewExpense = () => {
                             </RadioGroup>
                         </FormControl>
                     </Box>
-                    <Button variant="contained" onClick={() => addExpense()}>Agregar</Button> 
+                    {
+                        (name && description && price) ? 
+                            <Button variant="contained" onClick={() => addExpense()}>Agregar</Button> 
+                            :
+                            <Button variant="contained" disabled>Agregar</Button> 
+                    }
                 </Paper>
             </Box>            
         </>
@@ -173,3 +221,4 @@ const NewExpense = () => {
 }
 
 export default NewExpense
+

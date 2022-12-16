@@ -1,22 +1,33 @@
 import { useContext } from "react";
 import { ExpensesContext } from "../contexts/ExpensesContext";
 
-import ExpensesListHeader from "./ExpensesListHeader"
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import Divider from '@mui/material/Divider';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
+import { Stack } from "@mui/material";
 
-const listStyle = {
-    fontFamily: "Roboto, Helvetica, Arial, sans-serif",
-    padding: "3px",
-    border: "1px solid black", 
-    borderRadius: "3px",
-    display: "flex",
-    flexDirection: "row"
+const totalStyle = {
+    backgroundColor: "#68B984",
+    fontWeight: "bold",
+    maxWidth: "200px",
+    padding: "2px",
+    paddingLeft: "15px",
+    border: "2px solid black",
+    borderRadius: "20px"
 }
-const nameStyle = {
-    fontSize: "1.25rem",
-    marginTop: "5px",
-    marginBottom: "5px"
+
+const totalStyle2 = {
+    backgroundColor: "#FF1E1E",
+    fontWeight: "bold",
+    maxWidth: "200px",
+    padding: "2px",
+    paddingLeft: "15px",
+    border: "2px solid black",
+    borderRadius: "20px"
 }
 
 const DinersList = () => { 
@@ -34,58 +45,36 @@ const DinersList = () => {
                 <Typography variant="h5" gutterBottom component="div">
                     Lista de deudas
                 </Typography>
-                
-                
-                {buyersList.map((row) => (
-                    <div key={row.key} style={listStyle} >
-                        <div style={nameStyle}>Nombre: {row.name} </div>
-                        <div>Aportó: {row.buyerTotalExpenses} </div> 
-                        <div>Gastó: {row.debt} </div> 
-                        <div>Total: {row.buyerTotalExpenses - row.debt} </div> 
-                    </div>          
-                ))}
-                <ExpensesListHeader />
+                {buyersList.map(buyer => {
+                    return (
+                        <Card key={buyer.key} sx={{ minWidth: 275, mb: 1 }}>
+                            <CardContent>
+                                <Typography variant="h5" component="div" sx={{ mb: 1.5}} >
+                                    {buyer.name}
+                                </Typography>
+                                <Stack direction="row" spacing={2} sx={{mb:"10px"}}>
+                                    <AddCircleOutlineIcon color="#68B984"/>
+                                    <Typography sx={{ mb: 1 }} color="text.primary">
+                                        Aportó: {new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS' }).format(buyer.buyerTotalExpenses) }
+                                    </Typography>
+                                </Stack>
+                                <Stack direction="row" spacing={2} sx={{mb:"10px"}}>
+                                    <RemoveCircleOutlineIcon />
+                                    <Typography sx={{ mb: 1 }} color="text.primary">
+                                        Consumió: {new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS' }).format(buyer.debt) }
+                                    </Typography>
+
+                                </Stack>
+                                <Divider  />
+                                <Typography variant="h6" sx={{ mt: 1 }} style={((buyer.buyerTotalExpenses - buyer.debt) >= 0) ? totalStyle : totalStyle2}>
+                                    Total: {new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS' }).format(buyer.buyerTotalExpenses - buyer.debt) }
+                                </Typography>
+                            </CardContent>
+                        </Card>   )   
+                })}
             </Paper> 
         </>
     )
 }
 
 export default DinersList
-
-
-
-                           /*  
-
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-                           
-                           <TableContainer component={Paper}>
-                    <Table sx={{ minWidth: 650 }} >
-                        <TableHead>
-                            <TableRow>
-                                <TableCell>Nombre</TableCell>
-                                <TableCell align="right">Aportó</TableCell>
-                                <TableCell align="right">Gastó</TableCell>
-                                <TableCell align="right">Balance Final</TableCell>
-                            </TableRow>
-                        </TableHead>
-                    </Table>
-                </TableContainer>
-                           
-                           <TableBody>
-                                <TableRow
-                                key={row.key}
-                                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                                >
-                                    <TableCell component="th" scope="row">
-                                        {row.name}
-                                    </TableCell>
-                                    <TableCell align="right">{row.buyerTotalExpenses}</TableCell>
-                                    <TableCell align="right">{row.debt}</TableCell>
-                                    <TableCell align="right">{row.buyerTotalExpenses - row.debt}</TableCell>
-                                </TableRow> 
-                            </TableBody> */
